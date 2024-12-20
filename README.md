@@ -53,5 +53,5 @@ Replace `<folder>` with the relative path of the folder on the CDN.
 
 ## License
 
-This project is licensed under the MIT License. See the LICENSE file for details.
+This project is licensed under the MIT License.
 
