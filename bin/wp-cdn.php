@@ -102,7 +102,7 @@ class WP_CLI_CDN_Command {
         }
 
         $remote_path = "s3://{$this->cdn_bucket}/uploads/{$folder}";
-        $command = "s3cmd sync {$local_path}/ {$remote_path}";
+        $command = "s3cmd put {$local_path}/ {$remote_path} --recursive --acl-public";
         exec( $command, $output, $return_var );
 
         if ( $return_var !== 0 ) {
