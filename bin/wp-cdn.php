@@ -2,7 +2,7 @@
 /**
  * Plugin Name: WP CLI CDN Command
  * Description: A custom WP CLI command to interact with CDN using s3cmd.
- * Version: 1.0.0
+ * Version: 1.0.1
  * Author: Your Name
  */
 

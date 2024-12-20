@@ -48,6 +48,9 @@ Replace `<folder>` with the relative path of the folder on the CDN.
 
 ## Changelog
 
+### 1.0.1
+- Adding `composer.json`.
+
 ### 1.0.0
 - Initial release with `status`, `configure`, `put`, and `get` commands.
 
