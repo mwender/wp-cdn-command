@@ -48,6 +48,9 @@ Replace `<folder>` with the relative path of the folder on the CDN.
 
 ## Changelog
 
+### 1.1.0
+- Updating prompt logic.
+
 ### 1.0.1
 - Adding `composer.json`.
 

@@ -2,7 +2,7 @@
 /**
  * Plugin Name: WP CLI CDN Command
  * Description: A custom WP CLI command to interact with CDN using s3cmd.
- * Version: 1.0.1
+ * Version: 1.1.0
  * Author: Your Name
  */
 
@@ -16,9 +16,23 @@ class WP_CLI_CDN_Command {
 
     public function __construct() {
         $this->cdn_bucket = get_option( 'wp_cdn_bucket', false );
-        if ( ! $this->cdn_bucket && WP_CLI::get_runner()->current_command[0] !== 'configure' ) {
+    }
+
+    /**
+     * Validates if the CDN bucket is configured.
+     */
+    private function validate_cdn_bucket() {
+        if ( ! $this->cdn_bucket ) {
             WP_CLI::error( 'CDN bucket is not configured. Run `wp cdn configure` to set it up.' );
         }
+    }
+
+    /**
+     * Custom method to prompt user input for CLI.
+     */
+    private function prompt_user( $message ) {
+        fwrite( STDOUT, "$message: " );
+        return trim( fgets( STDIN ) );
     }
 
     /**
@@ -31,6 +45,8 @@ class WP_CLI_CDN_Command {
      * @when after_wp_load
      */
     public function status() {
+        $this->validate_cdn_bucket();
+
         // Check if s3cmd is installed.
         exec( 'command -v s3cmd', $output, $return_var );
         if ( $return_var !== 0 ) {
@@ -56,8 +72,9 @@ class WP_CLI_CDN_Command {
      * @when after_wp_load
      */
     public function configure() {
-        $bucket = WP_CLI::prompt( 'Enter your CDN bucket name' );
+        $bucket = $this->prompt_user( 'Enter your CDN bucket name' );
         update_option( 'wp_cdn_bucket', $bucket );
+        $this->cdn_bucket = $bucket; // Update the property after configuration
         WP_CLI::success( 'CDN bucket configured successfully.' );
     }
 
@@ -76,6 +93,7 @@ class WP_CLI_CDN_Command {
      * @when after_wp_load
      */
     public function put( $args, $assoc_args ) {
+        $this->validate_cdn_bucket();
         list( $folder ) = $args;
         $local_path = WP_CONTENT_DIR . "/uploads/" . $folder;
 
@@ -109,6 +127,7 @@ class WP_CLI_CDN_Command {
      * @when after_wp_load
      */
     public function get( $args, $assoc_args ) {
+        $this->validate_cdn_bucket();
         list( $folder ) = $args;
         $local_path = WP_CONTENT_DIR . "/uploads/" . $folder;
         $remote_path = "s3://{$this->cdn_bucket}/uploads/{$folder}";
